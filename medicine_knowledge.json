@@ -1,0 +1,285 @@
+{
+  "disclaimer": "Always consult a doctor before consuming any medicine.",
+  "medicines": [
+    {
+      "id": "paracetamol",
+      "name": "Paracetamol",
+      "category": "Pain Reliever",
+      "source": "NHS",
+      "tags": ["paracetamol", "acetaminophen", "fever", "pain"],
+      "description": "Used to relieve mild to moderate pain and reduce fever. Commonly used for headaches, muscle aches, toothache, and cold or flu symptoms."
+    },
+    {
+      "id": "ibuprofen",
+      "name": "Ibuprofen",
+      "category": "Anti-inflammatory",
+      "source": "NHS",
+      "tags": ["ibuprofen", "pain", "inflammation"],
+      "description": "A non-steroidal anti-inflammatory drug (NSAID) used to reduce pain, inflammation, and fever."
+    },
+    {
+      "id": "aspirin",
+      "name": "Aspirin",
+      "category": "Pain Reliever",
+      "source": "NHS",
+      "tags": ["aspirin", "pain", "fever", "blood clot"],
+      "description": "Used to relieve pain, reduce inflammation, lower fever, and in some cases reduce the risk of blood clots."
+    },
+    {
+      "id": "diclofenac",
+      "name": "Diclofenac",
+      "category": "Anti-inflammatory",
+      "source": "NHS",
+      "tags": ["diclofenac", "joint pain", "inflammation"],
+      "description": "Used to relieve pain and inflammation in muscles and joints."
+    },
+    {
+      "id": "naproxen",
+      "name": "Naproxen",
+      "category": "Anti-inflammatory",
+      "source": "MedlinePlus",
+      "tags": ["naproxen", "pain", "inflammation"],
+      "description": "Used to relieve pain and inflammation, especially joint and muscle pain."
+    },
+    {
+      "id": "mefenamic_acid",
+      "name": "Mefenamic Acid",
+      "category": "Pain Reliever",
+      "source": "MedlinePlus",
+      "tags": ["mefenamic acid", "menstrual pain"],
+      "description": "Used to relieve mild to moderate pain, including menstrual pain."
+    },
+    {
+      "id": "cetirizine",
+      "name": "Cetirizine",
+      "category": "Antihistamine",
+      "source": "MedlinePlus",
+      "tags": ["cetirizine", "allergy", "itching"],
+      "description": "Used to relieve allergy symptoms such as sneezing, runny nose, itching, and watery eyes."
+    },
+    {
+      "id": "loratadine",
+      "name": "Loratadine",
+      "category": "Antihistamine",
+      "source": "MedlinePlus",
+      "tags": ["loratadine", "allergy"],
+      "description": "Used to treat allergy symptoms including runny nose, sneezing, and watery eyes."
+    },
+    {
+      "id": "fexofenadine",
+      "name": "Fexofenadine",
+      "category": "Antihistamine",
+      "source": "MedlinePlus",
+      "tags": ["fexofenadine", "allergy"],
+      "description": "An antihistamine used to relieve allergy symptoms without causing drowsiness."
+    },
+    {
+      "id": "chlorpheniramine",
+      "name": "Chlorpheniramine",
+      "category": "Antihistamine",
+      "source": "MedlinePlus",
+      "tags": ["chlorpheniramine", "cold", "allergy"],
+      "description": "Used to relieve symptoms of allergies and the common cold."
+    },
+    {
+      "id": "antacids",
+      "name": "Antacids",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["antacid", "heartburn", "acid reflux"],
+      "description": "Help neutralize stomach acid and relieve heartburn and indigestion."
+    },
+    {
+      "id": "omeprazole",
+      "name": "Omeprazole",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["omeprazole", "acid reflux"],
+      "description": "Reduces stomach acid production and is used for acid-related digestive issues."
+    },
+    {
+      "id": "pantoprazole",
+      "name": "Pantoprazole",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["pantoprazole", "acid reflux"],
+      "description": "Used to reduce stomach acid and relieve acid reflux symptoms."
+    },
+    {
+      "id": "domperidone",
+      "name": "Domperidone",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["domperidone", "nausea"],
+      "description": "Used to relieve nausea and vomiting."
+    },
+    {
+      "id": "ondansetron",
+      "name": "Ondansetron",
+      "category": "Digestive",
+      "source": "MedlinePlus",
+      "tags": ["ondansetron", "vomiting"],
+      "description": "Used to prevent nausea and vomiting."
+    },
+    {
+      "id": "loperamide",
+      "name": "Loperamide",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["loperamide", "diarrhea"],
+      "description": "Used to control diarrhea symptoms."
+    },
+    {
+      "id": "bisacodyl",
+      "name": "Bisacodyl",
+      "category": "Digestive",
+      "source": "MedlinePlus",
+      "tags": ["bisacodyl", "constipation"],
+      "description": "Used to relieve constipation by stimulating bowel movement."
+    },
+    {
+      "id": "ors",
+      "name": "Oral Rehydration Salts (ORS)",
+      "category": "Hydration",
+      "source": "WHO",
+      "tags": ["ors", "dehydration", "diarrhea"],
+      "description": "Used to prevent and treat dehydration caused by diarrhea or fluid loss."
+    },
+    {
+      "id": "electrolytes",
+      "name": "Electrolyte Solution",
+      "category": "Hydration",
+      "source": "WHO",
+      "tags": ["electrolytes", "hydration"],
+      "description": "Helps restore fluid and mineral balance during dehydration."
+    },
+    {
+      "id": "salbutamol",
+      "name": "Salbutamol",
+      "category": "Respiratory",
+      "source": "NHS",
+      "tags": ["salbutamol", "asthma", "breathing"],
+      "description": "Relieves asthma and breathing difficulties by relaxing airway muscles."
+    },
+    {
+      "id": "montelukast",
+      "name": "Montelukast",
+      "category": "Respiratory",
+      "source": "MedlinePlus",
+      "tags": ["montelukast", "asthma", "allergy"],
+      "description": "Used to manage asthma and allergy-related breathing problems."
+    },
+    {
+      "id": "metformin",
+      "name": "Metformin",
+      "category": "Diabetes",
+      "source": "MedlinePlus",
+      "tags": ["metformin", "diabetes"],
+      "description": "Used to help control blood sugar levels in type 2 diabetes."
+    },
+    {
+      "id": "insulin",
+      "name": "Insulin",
+      "category": "Diabetes",
+      "source": "WHO",
+      "tags": ["insulin", "diabetes"],
+      "description": "Used to regulate blood sugar levels in diabetes."
+    },
+    {
+      "id": "amlodipine",
+      "name": "Amlodipine",
+      "category": "Blood Pressure",
+      "source": "NHS",
+      "tags": ["amlodipine", "blood pressure"],
+      "description": "Used to manage high blood pressure and heart conditions."
+    },
+    {
+      "id": "atorvastatin",
+      "name": "Atorvastatin",
+      "category": "Cholesterol",
+      "source": "NHS",
+      "tags": ["atorvastatin", "cholesterol"],
+      "description": "Helps lower cholesterol levels and reduce heart disease risk."
+    },
+    {
+      "id": "vitamin_c",
+      "name": "Vitamin C",
+      "category": "Supplement",
+      "source": "NHS",
+      "tags": ["vitamin c", "immunity"],
+      "description": "Supports immune function and overall health."
+    },
+    {
+      "id": "vitamin_d",
+      "name": "Vitamin D",
+      "category": "Supplement",
+      "source": "NHS",
+      "tags": ["vitamin d", "bone health"],
+      "description": "Supports bone strength and immune health."
+    },
+    {
+      "id": "iron",
+      "name": "Iron Supplement",
+      "category": "Supplement",
+      "source": "MedlinePlus",
+      "tags": ["iron", "anemia"],
+      "description": "Used to prevent or treat iron deficiency and anemia."
+    },
+    {
+      "id": "zinc",
+      "name": "Zinc",
+      "category": "Supplement",
+      "source": "NHS",
+      "tags": ["zinc", "immunity"],
+      "description": "Supports immune health and normal growth."
+    },
+    {
+      "id": "calcium",
+      "name": "Calcium Supplement",
+      "category": "Supplement",
+      "source": "NHS",
+      "tags": ["calcium", "bones"],
+      "description": "Supports strong bones and teeth."
+    },
+    {
+      "id": "magnesium",
+      "name": "Magnesium",
+      "category": "Supplement",
+      "source": "NHS",
+      "tags": ["magnesium", "muscle"],
+      "description": "Supports muscle function, nerves, and energy production."
+    },
+    {
+      "id": "melatonin",
+      "name": "Melatonin",
+      "category": "Sleep Aid",
+      "source": "NHS",
+      "tags": ["melatonin", "sleep"],
+      "description": "Supports sleep regulation and circadian rhythm."
+    },
+    {
+      "id": "povidone_iodine",
+      "name": "Povidone-Iodine",
+      "category": "Antiseptic",
+      "source": "NHS",
+      "tags": ["antiseptic", "wound"],
+      "description": "Used to prevent infection in minor cuts and wounds."
+    },
+    {
+      "id": "calamine",
+      "name": "Calamine Lotion",
+      "category": "Skin Care",
+      "source": "NHS",
+      "tags": ["calamine", "itching"],
+      "description": "Relieves itching and mild skin irritation."
+    },
+    {
+      "id": "hydrocortisone",
+      "name": "Hydrocortisone Cream",
+      "category": "Skin Care",
+      "source": "NHS",
+      "tags": ["hydrocortisone", "skin inflammation"],
+      "description": "Relieves skin inflammation, redness, and itching."
+    }
+  ]
+}

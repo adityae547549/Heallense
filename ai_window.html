@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heallense AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 420px;
+  height: 92vh;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(18px);
+  border-radius: 22px;
+  box-shadow: 0 30px 60px rgba(0,0,0,.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  padding: 18px;
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  color: white;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Chat */
+.chat {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.msg {
+  max-width: 85%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  line-height: 1.5;
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+.user {
+  background: #2563eb;
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.ai {
+  background: #f1f5f9;
+  color: #111;
+  border-bottom-left-radius: 4px;
+}
+
+/* Typing indicator */
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 12px;
+  border-bottom-left-radius: 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #94a3b8;
+  border-radius: 50%;
+  animation: blink 1.4s infinite both;
+}
+
+.dot:nth-child(2) { animation-delay: .2s; }
+.dot:nth-child(3) { animation-delay: .4s; }
+
+@keyframes blink {
+  0% { opacity: .2; }
+  20% { opacity: 1; }
+  100% { opacity: .2; }
+}
+
+/* Input */
+.input-box {
+  padding: 14px;
+  border-top: 1px solid #e5e7eb;
+  background: rgba(255,255,255,0.9);
+}
+
+.input-box input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Footer */
+.disclaimer {
+  font-size: 11px;
+  color: #555;
+  padding: 8px 14px;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>🧠 Heallense AI</h1>
+    <p>Your AI wellness assistant</p>
+  </div>
+
+  <div class="chat" id="chat">
+    <div class="msg ai">
+      Hi 👋  
+      You can ask me about diseases, symptoms, or common medicines.
+    </div>
+  </div>
+
+  <div class="input-box">
+    <input id="userInput" placeholder="Ask a health question…" />
+  </div>
+
+  <div class="disclaimer">
+    ⚠️ Educational use only. Always consult a doctor before taking any medicine.
+  </div>
+</div>
+
+<script>
+let diseases = [];
+let medicines = [];
+let typingEl = null;
+
+// Load datasets
+Promise.all([
+  fetch("disease_knowledge.json").then(r => r.json()),
+  fetch("medicine_knowledge.json").then(r => r.json())
+]).then(data => {
+  diseases = data[0].diseases;
+  medicines = data[1].medicines;
+});
+
+// Helpers
+const stopwords = [
+  "what","is","the","a","an","of","for","does","do","tell","me",
+  "about","explain","use","used","medicine","symptoms"
+];
+
+function normalize(text) {
+  return text.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .split(" ")
+    .filter(w => !stopwords.includes(w))
+    .join(" ");
+}
+
+function addMsg(text, cls) {
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.innerText = text;
+  document.getElementById("chat").appendChild(div);
+  document.getElementById("chat").scrollTop = 99999;
+}
+
+function showTyping() {
+  typingEl = document.createElement("div");
+  typingEl.className = "typing";
+  typingEl.innerHTML = `
+    Heallense is thinking
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  `;
+  document.getElementById("chat").appendChild(typingEl);
+  document.getElementById("chat").scrollTop = 99999;
+}
+
+function hideTyping() {
+  if (typingEl) {
+    typingEl.remove();
+    typingEl = null;
+  }
+}
+
+// Enter to send
+document.getElementById("userInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") askAI();
+});
+
+function askAI() {
+  const input = document.getElementById("userInput");
+  const qRaw = input.value.trim();
+  if (!qRaw) return;
+
+  addMsg(qRaw, "user");
+  input.value = "";
+  showTyping();
+
+  setTimeout(() => {
+    const q = normalize(qRaw);
+
+    // Medicine match
+    for (const m of medicines) {
+      if (q.includes(m.name.toLowerCase()) || m.tags.some(t => q.includes(t))) {
+        hideTyping();
+        addMsg(
+          `💊 ${m.name}\n\n${m.description}\n\nSource: ${m.source}`,
+          "ai"
+        );
+        return;
+      }
+    }
+
+    // Disease match
+    for (const d of diseases) {
+      if (q.includes(d.topic.toLowerCase()) || d.tags.some(t => q.includes(t))) {
+        hideTyping();
+        addMsg(
+          `🦠 ${d.topic}\n\n${d.content}\n\nSymptoms:\n• ${d.symptoms.join("\n• ")}\n\nManagement:\n• ${d.management.join("\n• ")}`,
+          "ai"
+        );
+        return;
+      }
+    }
+
+    // Symptom-based fallback
+    for (const d of diseases) {
+      if (d.symptoms.some(s => q.includes(s.toLowerCase()))) {
+        hideTyping();
+        addMsg(
+          `⚠️ These symptoms may be related to ${d.topic}.\n\n${d.content}\n\nPlease consult a healthcare professional for confirmation.`,
+          "ai"
+        );
+        return;
+      }
+    }
+
+    // Safe fallback
+    hideTyping();
+    addMsg(
+      "I can help with general health information.\n\nTry asking:\n• What is asthma?\n• What does paracetamol do?\n• Symptoms of dehydration",
+      "ai"
+    );
+  }, 700); // typing delay
+}
+</script>
+
+</body>
+</html>

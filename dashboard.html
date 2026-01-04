@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heallense | Dashboard</title>
+
+<!-- Combined styles -->
+<style>
+:root{--brand:#1aa37a;--accent:#4f7cff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
+body{background:linear-gradient(180deg,#eef2ff,#f9fbff);min-height:100vh;padding:28px}
+.container{max-width:1100px;margin:auto;padding:20px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .header-logo{width:44px;height:auto;border-radius:8px;object-fit:contain}
+.brand .brand-name{font-size:20px;font-weight:700;color:var(--brand)}
+.logout{background:#ff5c5c;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 10px 25px rgba(0,0,0,.06)}
+.header h2{font-size:26px;margin-bottom:4px}
+.header p{color:#666}
+.form-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px;align-items:center}
+.card label{font-size:14px;color:#555;margin-bottom:8px;display:block}
+.moods{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.mood{width:56px;height:56px;font-size:24px;cursor:pointer;border-radius:12px;background:#f1f4ff;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .08s}
+.mood:hover{background:#dfe6ff;transform:translateY(-2px)}
+.mood.active{box-shadow:0 6px 15px rgba(79,124,255,.12);background:linear-gradient(180deg,#e8f0ff,#f1f5ff)}
+.range-row{display:flex;align-items:center;gap:12px;margin-top:8px}
+.range{flex:1;height:6px}
+.range::-webkit-slider-thumb{height:18px;width:18px;border-radius:50%;background:var(--accent)}
+.sleep-value{min-width:44px;text-align:center;font-weight:700}
+.water{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.water .controls{display:flex;align-items:center;gap:12px}
+.water button{width:36px;height:36px;border:none;border-radius:50%;background:var(--accent);color:#fff;font-size:18px}
+.insight{background:linear-gradient(135deg,var(--accent),#6ea8ff);color:#fff}
+.stats{display:flex;justify-content:space-between;text-align:center;gap:16px;flex-wrap:wrap}
+.stat h3{font-size:22px}
+.select, .number{width:100%;margin-top:8px;padding:8px;border-radius:6px;border:1px solid #ccc}
+.streak{font-size:28px;color:var(--brand);font-weight:700}
+.ai-box{margin-top:20px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#dff7ef,#f4fdfb)}
+.ai-btn{background:#fff;color:var(--accent);border:1px solid rgba(79,124,255,.15);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.ai-btn[disabled]{opacity:.6;cursor:not-allowed}
+.ai-status{color:#fff;font-weight:600;margin-left:6px;opacity:.95}
+.ai-status.error{color:#ffd2d2}
+/* Reminders */
+.reminder-form .select{ width:100%; padding:8px; border-radius:6px; border:1px solid #ddd }
+#remindersList .reminder-item{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f1f4ff }
+#remindersList .reminder-item strong{ display:block }
+.ai-btn.small{ padding:6px 10px; font-size:13px; background:#f3f4f6; color:#111; border-radius:8px }
+@media (max-width:700px){ .reminder-form input{ width:100% } }
+/* Chat modal styles */
+.ai-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1200}
+.ai-modal.open{display:flex}
+.ai-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.ai-modal-panel{position:relative;background:#fff;border-radius:12px;width:560px;max-width:95%;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.2)}
+.ai-chat-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #eee}
+.ai-chat-messages{padding:12px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px;background:#f9fbff}
+.ai-chat-msg{max-width:78%;padding:10px 12px;border-radius:12px}
+.ai-chat-msg.user{background:linear-gradient(180deg,#4f7cff,#6ea8ff);color:#fff;align-self:flex-end}
+.ai-chat-msg.ai{background:#fff;border:1px solid #eee;align-self:flex-start}
+.ai-chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid #eee}
+.ai-chat-input input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}
+@media (max-width:520px){
+  .ai-modal-panel{width:100%;height:100%;border-radius:0;max-height:100vh}
+  .ai-chat-messages{padding:10px}
+}
+
+@media (max-width:700px){
+  .form-controls{grid-template-columns:1fr}
+  .mood{width:48px;height:48px;font-size:20px}
+  .stats{flex-direction:row}
+  .top-bar{padding:0 8px}
+}
+
+</style>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, runTransaction, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBd6RIP1EAuo6RLTOR3kkALYLasCezL-tM",
+  authDomain: "heallense.firebaseapp.com",
+  projectId: "heallense",
+  storageBucket: "heallense.firebasestorage.app",
+  messagingSenderId: "278969011906",
+  appId: "1:278969011906:web:d038ca58df6c63d127355b"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let uid;
+let userDocUnsub = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    localStorage.removeItem('uid');
+    if(typeof userDocUnsub === 'function') userDocUnsub();
+    window.location.href = "login.html";
+  } else {
+    uid = user.uid;
+    localStorage.setItem('uid', uid);
+    await loadUserData();
+
+    // Real-time sync for cross-device updates (streak and lastDate)
+    if (userDocUnsub) userDocUnsub();
+    const ref = doc(db, 'user', uid);
+    userDocUnsub = onSnapshot(ref, (snap) => {
+      if (!snap.exists()) return;
+      const d = snap.data();
+      // keep local name and UI in sync
+      if (d.name) {
+        localStorage.setItem('realName', d.name);
+        document.getElementById('username').innerText = `Hey ${d.name} 👋`;
+      }
+      if (typeof d.streak !== 'undefined') {
+        localStorage.setItem('streak', d.streak);
+        document.getElementById('streakSmall').innerText = d.streak;
+        setStreakDisplay(d.streak);
+      }
+      if (d.lastDate) localStorage.setItem('lastDate', d.lastDate);
+    });
+  }
+});
+
+window.logout = async () => {
+  await signOut(auth);
+  localStorage.removeItem('uid');
+  if(typeof userDocUnsub === 'function') userDocUnsub();
+  userDocUnsub = null;
+  window.location.href = "login.html";
+};
+
+/* End Firebase module */
+
+
+async function loadUserData() {
+  if (!uid) return;
+  const ref = doc(db, "user", uid);
+  const snap = await getDoc(ref);
+
+  if (snap.exists()) {
+    const d = snap.data();
+    // If server provides a name, persist locally and show it
+    if (d.name) {
+      localStorage.setItem('realName', d.name);
+      document.getElementById('username').innerText = `Hey ${d.name} 👋`;
+    }
+
+    // populate fields
+    setMood(d.mood || d.mood === 0 ? d.mood : 'Calm');
+    sleepRange.value = d.sleep || 0;
+    water = d.water || 0;
+    waterCount.innerText = `${water} glasses`;
+    waterStat.innerText = water;
+    sleepStat.innerText = (d.sleep || 0) + 'h';
+
+    // Derive lastDate from server data: prefer lastDate, otherwise use createdAt if available
+    let serverLast = null;
+    if (d.lastDate) serverLast = d.lastDate;
+    else if (d.createdAt && typeof d.createdAt.toDate === 'function') serverLast = d.createdAt.toDate().toDateString();
+
+    if (serverLast) {
+      localStorage.setItem('lastDate', serverLast);
+    }
+
+    // Sync streak: prefer explicit streak, otherwise initialize to 1 if createdAt exists
+    if (typeof d.streak !== 'undefined') {
+      localStorage.setItem('streak', d.streak);
+      streakNum.innerText = d.streak;
+      document.getElementById('streakSmall').innerText = d.streak;
+    } else if (d.createdAt) {
+      // account created previously but no streak recorded - initialize to 1
+      localStorage.setItem('streak', '1');
+      streakNum.innerText = 1;
+      document.getElementById('streakSmall').innerText = 1;
+    }
+
+    updateInsight();
+  } else {
+    updateInsight();
+  }
+}
+
+async function saveUserData() {
+  if (!uid) return;
+  const today = new Date().toDateString();
+  const ref = doc(db, "users", uid);
+
+  try {
+    const newStreak = await runTransaction(db, async (t) => {
+      const snap = await t.get(ref);
+      let serverLast = null;
+      let serverStreak = 0;
+
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.lastDate) {
+          serverLast = d.lastDate;
+          serverStreak = Number(d.streak || 0);
+        } else if (d.createdAt && typeof d.createdAt.toDate === 'function') {
+          // Use createdAt as initial lastDate and assume streak=1 if not provided
+          serverLast = d.createdAt.toDate().toDateString();
+          serverStreak = (typeof d.streak !== 'undefined') ? Number(d.streak) : 1;
+        } else {
+          serverLast = null;
+          serverStreak = Number(d.streak || 0);
+        }
+      }
+
+      // If server already recorded today, keep its value
+      if (serverLast === today) {
+        // still update other fields but keep streak as server value
+        t.set(ref, {
+          name: localStorage.getItem("realName"),
+          mood: moodValue(),
+          sleep: Number(sleepRange.value) || 0,
+          water,
+          lastUpdated: new Date()
+        }, { merge: true });
+        return serverStreak;
+      }
+
+      // Check if server's lastDate was yesterday -> continue streak
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+      let resultingStreak = 1;
+      if (serverLast === yesterday.toDateString()) {
+        resultingStreak = serverStreak + 1;
+      } else {
+        resultingStreak = 1;
+      }
+
+      t.set(ref, {
+        name: localStorage.getItem("realName"),
+        mood: moodValue(),
+        sleep: Number(sleepRange.value) || 0,
+        water,
+        streak: resultingStreak,
+        lastDate: today,
+        lastUpdated: new Date()
+      }, { merge: true });
+
+      return resultingStreak;
+    });
+
+    // Persist locally and update UI
+    persistStreak(newStreak);
+  } catch (e) {
+    console.error('Transaction failed, falling back to simple save', e);
+    // Fallback: best-effort save (may cause duplicate increments in rare races)
+    const fallbackStreak = calculateStreak();
+    const todayStr = new Date().toDateString();
+    await setDoc(doc(db, "user", uid), {
+      name: localStorage.getItem("realName"),
+      mood: moodValue(),
+      sleep: Number(sleepRange.value) || 0,
+      water,
+      streak: fallbackStreak,
+      lastDate: todayStr,
+      lastUpdated: new Date()
+    }, { merge: true });
+    persistStreak(fallbackStreak);
+  }
+}
+
+</script>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <div class="brand">
+      <img src="/frontend/assets/logo.png" alt="Heallense logo" class="header-logo" loading="lazy">
+      <span class="brand-name">Heallense</span>
+    </div>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="card header">
+    <h2 id="username">Hey 👋</h2>
+    <p id="status">Let’s check how you’re feeling today</p>
+  </div>
+
+  <div class="card">
+    <h3>Wellness Inputs</h3>
+    <div class="form-controls">
+      <div>
+        <label>😊 Mood</label>
+        <div class="moods mt-8">
+          <div class="mood" onclick="setMood('Happy')">😄</div>
+          <div class="mood" onclick="setMood('Calm')">😌</div>
+          <div class="mood" onclick="setMood('Stressed')">😣</div>
+          <div class="mood" onclick="setMood('Tired')">😴</div>
+        </div>
+        <select id="mood" class="select mt-8">
+          <option>Happy</option>
+          <option>Calm</option>
+          <option>Stressed</option>
+          <option>Tired</option>
+        </select>
+      </div>
+
+      <div>
+        <label>😴 Sleep (hours)</label>
+        <div class="range-row">
+          <input type="range" min="0" max="12" step="0.5" id="sleepRange" class="range">
+          <div class="sleep-value"><strong id="sleepStat">0h</strong></div>
+        </div>
+      </div>
+
+      <div>
+        <label>💧 Water (glasses)</label>
+        <div class="water">
+          <div class="controls">
+            <button onclick="changeWater(-1)">−</button>
+            <span id="waterCount">0 glasses</span>
+            <button onclick="changeWater(1)">+</button>
+          </div>
+          <div class="sleep-value mt-6"><strong id="waterStat">0</strong></div>
+        </div>
+      </div>
+
+      <div>
+        <label>🔥 Streak</label>
+        <div class="streak" id="streakNum">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-box card">
+    <h3>🧠 AI Insight</h3>
+    <p id="aiText" aria-live="polite">Update your data to see insights.</p>
+    <div class="mt-12 d-flex gap-10 items-center">
+      <button class="ai-btn" id="aiButton" onclick="openChat()">Ask AI</button>
+      <button class="ai-btn ml-6" id="aiQuick" onclick="getAIInsight()">Quick insight</button>
+      <span id="aiStatus" class="ai-status" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="card" id="remindersCard">
+    <h3>Reminders</h3>
+    <p class="lead">Set quick reminders for hydration, medication, or breathing breaks.</p>
+    <div class="reminder-form">
+      <input type="text" id="reminderText" placeholder="Reminder (e.g., Drink water)" class="select" />
+      <input type="datetime-local" id="reminderTime" class="select" />
+      <div class="reminder-container">
+        <div class="reminder-row">
+          <button id="addReminderBtn" class="ai-btn">Add reminder</button>
+          <small id="reminderHint" class="reminder-hint">Notifications may require permission.</small>
+        </div>
+
+        <div class="reminder-options">
+          <label class="reminder-option-label"><input type="checkbox" id="autoToggle"> Enable Smart Reminders</label>
+
+          <label class="reminder-option-label"><span class="reminder-interval-label">Interval</span>
+            <select id="autoIntervalSelect" class="select" style="width:auto;padding:6px 8px;margin-left:6px">
+              <option value="15">15 min</option>
+              <option value="30" selected>30 min</option>
+              <option value="60">60 min</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+    <div id="remindersList" class="reminders-list"></div>
+  </div>
+
+  <!-- AI Chat Modal -->
+  <div id="aiChatModal" class="ai-modal" aria-hidden="true">
+    <div class="ai-modal-backdrop" onclick="closeChat()"></div>
+    <div class="ai-modal-panel" role="dialog" aria-modal="true" aria-label="AI Chat">
+      <div class="ai-chat-header">
+        <div class="d-flex items-center gap-8"><strong>Chat with AI</strong><small style="color:#666;font-size:13px">— get personalized guidance</small></div>
+        <div><button onclick="closeChat()" aria-label="Close">✕</button></div>
+      </div>
+      <div id="chatMessages" class="ai-chat-messages" tabindex="0" aria-live="polite"></div>
+      <div class="ai-chat-input">
+        <input id="chatInput" type="text" placeholder="Ask the AI about your mood, sleep, or hydration..." />
+        <button id="chatSend" class="ai-btn" onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card stats">
+    <div class="stat">
+      <h3 id="sleepStatSmall">0h</h3>
+      <p>Sleep</p>
+    </div>
+    <div class="stat">
+      <h3 id="waterStatSmall">0</h3>
+      <p>Water</p>
+    </div>
+    <div class="stat">
+      <h3 id="streakSmall">0</h3>
+      <p>Streak</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* REAL NAME */
+const realName = localStorage.getItem("realName");
+const username = document.getElementById("username");
+username.innerText = realName ? `Hey ${realName} 👋` : "Hey there 👋";
+
+/* ELEMENTS */
+const moodSelect = document.getElementById("mood");
+const sleepRange = document.getElementById("sleepRange");
+const waterCount = document.getElementById("waterCount");
+const waterStat = document.getElementById("waterStat");
+const sleepStat = document.getElementById("sleepStat");
+const aiText = document.getElementById("aiText");
+const streakNum = document.getElementById("streakNum");
+
+/* STATE */
+let water = Number(localStorage.getItem('water') || 0);
+let streak = Number(localStorage.getItem('streak') || 0);
+let lastDate = localStorage.getItem('lastDate') || '';
+
+/* INIT */
+waterCount.innerText = `${water} glasses`;
+waterStat.innerText = water;
+document.getElementById('sleepStatSmall').innerText = `${sleepRange.value || 0}h`;
+document.getElementById('waterStatSmall').innerText = water;
+document.getElementById('streakSmall').innerText = streak;
+streakNum.innerText = streak;
+
+/* EVENTS */
+// mood select change
+moodSelect.addEventListener('change', () => {
+  updateInsight();
+  saveUserData();
+});
+
+// sleep change
+sleepRange.addEventListener('input', (e) => {
+  const v = e.target.value;
+  sleepStat.innerText = v + 'h';
+  document.getElementById('sleepStatSmall').innerText = v + 'h';
+  updateInsight();
+  saveUserData();
+});
+
+// water buttons handled by changeWater
+
+// mood buttons
+function setMood(m){
+  // set both select and internal value
+  moodSelect.value = m;
+  document.getElementById('status').innerText = `Feeling ${m.toLowerCase()} today`;
+  updateInsight();
+  saveUserData();
+}
+
+function moodValue(){
+  return moodSelect.value;
+}
+
+function changeWater(v){
+  water = Math.max(0, water + v);
+  waterCount.innerText = `${water} glasses`;
+  waterStat.innerText = water;
+  document.getElementById('waterStatSmall').innerText = water;
+  updateInsight();
+  saveUserData();
+  localStorage.setItem('water', water);
+}
+
+/* INSIGHT LOGIC */
+function updateInsight(){
+  const m = moodValue();
+  const s = Number(sleepRange.value) || 0;
+  const w = water;
+  let msg = "You're maintaining balance — keep it up 🌿";
+
+  if (s && s < 6) msg = "Try sleeping 30 minutes earlier tonight 😴";
+  if (w && w < 5) msg = "Hydration is low — drink more water 💧";
+  if (m === "Stressed" || m === "Bad") msg = "Take a short breathing break 🧘‍♂️";
+
+  aiText.innerText = msg;
+}
+
+/* AI BUTTON: lightweight local 'AI' handler */
+async function getAIInsight(){
+  const btn = document.getElementById('aiButton');
+  const status = document.getElementById('aiStatus');
+  try{
+    btn.disabled = true;
+    btn.innerText = 'Thinking...';
+    status.innerText = '';
+    // build a more detailed 'AI' insight from current values
+    const m = moodValue();
+    const s = Number(sleepRange.value) || 0;
+    const w = water;
+    const parts = [];
+    if(m === 'Stressed' || m === 'Bad') parts.push('You seem stressed — try a 5-minute breathing exercise.');
+    if(s && s < 7) parts.push('Sleep is low — aim for 7–8 hours by shifting bedtime 15–30 minutes earlier.');
+    if(w && w < 6) parts.push('Hydration is below target — set hourly reminders or carry a bottle.');
+    if(parts.length === 0) parts.push("You're in a good place today — keep the momentum! 🌿");
+
+    // simulate short processing time for a nicer UX
+    await new Promise(r => setTimeout(r, 800));
+
+    const detailed = parts.join(' ');
+    aiText.innerText = detailed;
+    status.innerText = 'Done';
+    // save the current state back to Firestore/local store
+    saveUserData();
+  } catch(e){
+    status.innerText = 'Error';
+    status.classList.add('error');
+  } finally {
+    btn.disabled = false;
+    btn.innerText = 'Ask AI';
+    setTimeout(()=>{ status.innerText = ''; status.classList.remove('error'); }, 1600);
+  }
+}
+
+/* CHAT MODAL FUNCTIONS */
+const chatKey = () => (uid ? `aiChat:${uid}` : 'aiChat:guest');
+
+function openChat(){
+  // Open the AI helper in a new centered popup window
+  const url = 'ai_window.html';
+  const width = 520, height = 700;
+  const left = window.screenX + Math.max(0, Math.floor((window.outerWidth - width) / 2));
+  const top = window.screenY + Math.max(0, Math.floor((window.outerHeight - height) / 2));
+  const features = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`;
+  const win = window.open(url, 'HeallenseAI', features);
+  if(win){
+    try{ win.focus(); }catch(e){}
+  } else {
+    // Popup blocked — fall back to opening in same tab
+    window.location.href = url;
+  }
+}
+
+function closeChat(){
+  const modal = document.getElementById('aiChatModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+}
+
+function appendMessage(text, who){
+  const wrap = document.createElement('div');
+  wrap.className = 'ai-chat-msg ' + (who === 'user' ? 'user' : 'ai');
+  wrap.innerText = text;
+  const container = document.getElementById('chatMessages');
+  container.appendChild(wrap);
+  container.scrollTop = container.scrollHeight - container.clientHeight;
+}
+
+async function sendChat(){
+  const input = document.getElementById('chatInput');
+  const val = input.value.trim();
+  if(!val) return;
+  appendMessage(val, 'user');
+  saveChatHistory();
+  input.value = '';
+  // simulate AI reply
+  appendMessage('Thinking...', 'ai');
+  const reply = await simulateAIChatResponse(val);
+  // replace last 'Thinking...' bubble
+  const container = document.getElementById('chatMessages');
+  const last = container.querySelectorAll('.ai-chat-msg.ai');
+  if(last.length) last[last.length-1].innerText = reply;
+  saveChatHistory();
+}
+
+function saveChatHistory(){
+  const container = document.getElementById('chatMessages');
+  const items = [];
+  container.querySelectorAll('.ai-chat-msg').forEach(el => {
+    items.push({who: el.classList.contains('user') ? 'user' : 'ai', text: el.innerText, ts: Date.now()});
+  });
+  localStorage.setItem(chatKey(), JSON.stringify(items));
+}
+
+function loadChatHistory(){
+  const raw = localStorage.getItem(chatKey());
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = '';
+  if(raw){
+    try{
+      const arr = JSON.parse(raw);
+      arr.forEach(item => appendMessage(item.text, item.who));
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+      return;
+    }catch(e){
+      console.error('Failed to load chat history', e);
+    }
+  }
+  // welcome message
+  appendMessage('Hi! I can help with personalized tips — ask me anything about mood, sleep, or hydration.', 'ai');
+}
+
+async function simulateAIChatResponse(userText){
+  const m = moodValue();
+  const s = Number(sleepRange.value) || 0;
+  const w = water;
+  const parts = [];
+  if(userText.toLowerCase().includes('sleep')) parts.push('For better sleep, try a consistent bedtime and avoid screens 30 minutes before bed.');
+  if(userText.toLowerCase().includes('water')) parts.push('Aim for at least 8 glasses; set hourly reminders or use a water bottle with measurements.');
+  if(userText.toLowerCase().includes('stress') || m==='Stressed') parts.push('Short breath exercises (4-4-4) can help reduce stress quickly.');
+  if(parts.length === 0){
+    if(s && s < 6) parts.push('Your sleep is a bit low — consider a short nap and earlier bedtime.');
+    if(w && w < 5) parts.push('Hydration is low — have a glass of water now.');
+    if(m === 'Stressed') parts.push('You appear stressed — try a 5-minute guided breathing break.');
+  }
+  await new Promise(r => setTimeout(r, 900));
+  return parts.length ? parts.join(' ') : "You're doing well — keep it up!";
+}
+
+/* STREAK */
+function calculateStreak(){
+  // Pure calculation based on local stored values. Does NOT persist to server/localStorage.
+  const today = new Date().toDateString();
+  const last = localStorage.getItem("lastDate");
+  let s = Number(localStorage.getItem("streak") || 0);
+
+  // If already recorded today, return current streak
+  if (last === today) {
+    return s;
+  }
+
+  if (!last) {
+    s = 1;
+  } else {
+    const lastDateObj = new Date(last);
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (lastDateObj.toDateString() === yesterday.toDateString()) {
+      s = s + 1;
+    } else {
+      s = 1;
+    }
+  }
+
+  return s;
+}
+
+function persistStreak(value){
+  const today = new Date().toDateString();
+  localStorage.setItem("streak", String(value));
+  localStorage.setItem("lastDate", today);
+  document.getElementById('streakSmall').innerText = value;
+  setStreakDisplay(value);
+}
+
+// Keep small UI synced when streak changes from backend
+function setStreakDisplay(v){
+  streakNum.innerText = v;
+  document.getElementById('streakSmall').innerText = v;
+}
+
+// On load show insight
+updateInsight();
+
+// Reminders: load and schedule persisted reminders
+function getUid(){ return localStorage.getItem('uid') || 'guest' }
+const remindersKey = (u) => `reminders:${u}`;
+let reminders = [];
+const timeouts = new Map();
+
+function saveReminders(){ const k = remindersKey(getUid()); localStorage.setItem(k, JSON.stringify(reminders)); }
+
+function disableAutoReminders(setDisabledFlag){ // remove any auto reminders and stop their timers
+  const hadAuto = reminders.some(r => r.auto);
+  reminders = reminders.filter(r => !r.auto);
+  // clear timeouts for removed entries
+  const ids = new Set(reminders.map(r => r.id));
+  for(const [id, t] of timeouts.entries()){
+    if(!ids.has(id)) { clearTimeout(t); timeouts.delete(id); }
+  }
+  saveReminders(); renderReminders(); if(setDisabledFlag){ localStorage.setItem(`autoDisabled:${getUid()}`, '1'); }
+}
+
+function enableAutoReminders(){ // don't enable if user opted out
+  if(localStorage.getItem(`autoDisabled:${getUid()}`) === '1') return;
+  if(reminders.some(r=>r.auto)) return; // already enabled
+  const id = 'auto'; const interval = 30 * 60 * 1000; const r = { id, text: 'Time for a quick hydration or breathing break', ts: Date.now() + interval, recurring: true, interval, auto: true };
+  reminders.push(r); saveReminders(); renderReminders(); scheduleReminder(r);
+}
+
+function loadReminders(){ const k = remindersKey(getUid()); const raw = localStorage.getItem(k) || localStorage.getItem('reminders:guest'); try{ reminders = raw ? JSON.parse(raw) : []; }catch(e){ reminders = []; }
+ // If user has no manual reminders, enable auto reminders unless the user opted out
+ const manual = reminders.filter(r => !r.auto);
+ if(manual.length === 0){ enableAutoReminders(); }
+ renderReminders(); scheduleAll(); }
+
+function renderReminders(){
+  const el = document.getElementById('remindersList'); if(!el) return; if(!reminders.length){ el.innerHTML = '<p class="muted">No reminders yet.</p>'; return; }
+  el.innerHTML = reminders.map(r => {
+    const t = new Date(r.ts);
+    const recurring = r.recurring ? '<div class="reminder-tag reminder-recurring">Recurring</div>' : '';
+    const autoNote = r.auto ? '<div class="reminder-tag reminder-auto">(Auto)</div>' : '';
+    return `<div class="reminder-item" data-id="${r.id}"><div><strong>${escapeHtml(r.text)}</strong><div class="reminder-meta">${t.toLocaleString()}</div>${recurring}${autoNote}</div><div class="reminder-actions"><button class="ai-btn small" data-action="dismiss">Dismiss</button><button class="ai-btn small" data-action="delete">Delete</button></div></div>`
+  }).join('');
+}
+
+function scheduleAll(){ reminders.forEach(scheduleReminder); }
+
+function scheduleReminder(r){ clearTimeout(timeouts.get(r.id)); const now = Date.now(); const delta = r.ts - now; if(delta <= 0){ triggerReminder(r); return; } const t = setTimeout(()=> triggerReminder(r), delta); timeouts.set(r.id, t); }
+
+function triggerReminder(r){ const msg = r.text || 'Reminder';
+ // recurring reminders: show then reschedule
+ if(r.recurring){ if('Notification' in window && Notification.permission === 'granted'){ new Notification('Heallense Reminder', { body: msg }); } else if('Notification' in window && Notification.permission !== 'denied'){ Notification.requestPermission().then(p => { if(p === 'granted') new Notification('Heallense Reminder', { body: msg }); else alert(msg); }); } else { alert(msg); }
+ // schedule next occurrence
+ const interval = r.interval || (30 * 60 * 1000);
+ r.ts = Date.now() + interval;
+ saveReminders(); renderReminders(); scheduleReminder(r);
+ return; }
+
+ // non-recurring reminder: mark triggered and show once
+ r.triggered = true; saveReminders(); renderReminders(); if('Notification' in window && Notification.permission === 'granted'){ new Notification('Heallense Reminder', { body: msg }); } else if('Notification' in window && Notification.permission !== 'denied'){ Notification.requestPermission().then(p => { if(p === 'granted') new Notification('Heallense Reminder', { body: msg }); else alert(msg); }); } else { alert(msg); } }
+
+function addReminder(text, ts){ // adding a user reminder disables automatic reminders
+ disableAutoReminders(true);
+ const id = 'r_' + Date.now(); const r = { id, text, ts, triggered: false }; reminders.push(r); saveReminders(); renderReminders(); scheduleReminder(r); }
+
+function escapeHtml(str){ return String(str).replace(/[&<>'"]/g, (c)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]); }
+
+// add handlers
+const addBtn = document.getElementById('addReminderBtn');
+addBtn?.addEventListener('click', ()=>{
+  const txt = (document.getElementById('reminderText').value || '').trim();
+  const tStr = document.getElementById('reminderTime').value;
+  if(!txt || !tStr){ return alert('Enter reminder text and time.'); }
+  const ts = new Date(tStr).getTime(); if(isNaN(ts) || ts <= Date.now()){ return alert('Select a future time.'); }
+  // request notification permission now (non-blocking)
+  if('Notification' in window && Notification.permission === 'default'){ Notification.requestPermission(); }
+  addReminder(txt, ts);
+  document.getElementById('reminderText').value = '';
+  document.getElementById('reminderTime').value = '';
+});
+
+const remindersListEl = document.getElementById('remindersList');
+remindersListEl?.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button'); if(!btn) return; const item = btn.closest('.reminder-item'); const id = item?.dataset?.id; if(!id) return; const action = btn.dataset.action;
+  if(action === 'delete'){
+    const deletedAuto = !!reminders.find(x=>x.id===id && x.auto);
+    reminders = reminders.filter(x=>x.id !== id);
+    saveReminders(); renderReminders(); clearTimeout(timeouts.get(id)); timeouts.delete(id);
+    // if user deleted auto reminder, set opt-out flag
+    if(deletedAuto){ localStorage.setItem(`autoDisabled:${getUid()}`, '1'); }
+    // if user deleted a manual reminder and now there are no manuals left, and user hasn't opted out, enable auto reminders
+    const manual = reminders.filter(r=>!r.auto);
+    if(manual.length === 0){ enableAutoReminders(); }
+  }
+  else if(action === 'dismiss'){
+    reminders = reminders.map(x=> x.id===id ? {...x, triggered:true} : x);
+    saveReminders(); renderReminders(); clearTimeout(timeouts.get(id)); timeouts.delete(id);
+  }
+});
+
+// initialize reminders after auth/user data loaded
+loadReminders();
+
+// Auto reminder configuration helpers
+const autoIntervalKey = (u) => `autoInterval:${u}`;
+function getAutoIntervalMinutes(){ return Number(localStorage.getItem(autoIntervalKey(getUid())) || 30); }
+function getAutoIntervalMs(){ return getAutoIntervalMinutes() * 60 * 1000; }
+function setAutoIntervalMinutes(min){ localStorage.setItem(autoIntervalKey(getUid()), String(min)); // update existing auto reminder if present
+  const r = reminders.find(x => x.auto);
+  if(r){ r.interval = min * 60 * 1000; r.ts = Date.now() + r.interval; saveReminders(); renderReminders(); scheduleReminder(r); }
+}
+
+function isAutoEnabled(){ return localStorage.getItem(`autoDisabled:${getUid()}`) !== '1'; }
+function setAutoEnabled(enabled){ if(enabled){ localStorage.removeItem(`autoDisabled:${getUid()}`); enableAutoReminders(); } else { disableAutoReminders(true); } updateAutoUI(); }
+
+function updateAutoUI(){ const toggle = document.getElementById('autoToggle'); const sel = document.getElementById('autoIntervalSelect'); if(!toggle || !sel) return; toggle.checked = isAutoEnabled(); sel.value = String(getAutoIntervalMinutes()); sel.disabled = !toggle.checked; }
+
+// wire up UI controls
+const autoToggle = document.getElementById('autoToggle');
+autoToggle?.addEventListener('change', (e) => setAutoEnabled(e.target.checked));
+const autoSel = document.getElementById('autoIntervalSelect');
+autoSel?.addEventListener('change', (e) => setAutoIntervalMinutes(Number(e.target.value)));
+
+// ensure UI reflects current state
+updateAutoUI();
+
+// Chat input handlers
+const chatInputEl = document.getElementById('chatInput');
+if(chatInputEl){
+  chatInputEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); sendChat(); }
+  });
+}
+// allow closing modal with Escape
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape'){ closeChat(); } });
+
+</script>
+
+</body>
+</html>

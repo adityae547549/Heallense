@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login | Heallense</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="auth-page">
+
+<div class="auth-card">
+  <h2 class="auth-title">Welcome back</h2>
+  <p class="auth-subtext">Sign in to access your HealLense dashboard</p>
+
+  <form id="loginForm" novalidate>
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      class="input"
+      type="email"
+      placeholder="you@domain.com"
+      autocomplete="email"
+      required
+    >
+
+    <label for="password">Password</label>
+    <div style="position:relative">
+      <input
+        id="password"
+        name="password"
+        class="input"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      >
+      <button
+        type="button"
+        class="toggle-pass"
+        aria-label="Show password"
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#6b7280;cursor:pointer">
+        Show
+      </button>
+    </div>
+
+    <div id="formError" class="form-error" role="alert" aria-live="assertive" style="display:none"></div>
+
+    <button type="submit" id="submitBtn" class="btn primary" onclick="location.href='dashboard.html'">
+      Login
+    </button>
+  </form>
+
+  <p class="small">Don't have an account? <a href="signup.html">Sign up</a></p>
+
+  <hr>
+
+  <button id="googleLogin" type="button" class="btn google">
+    <img src="https://developers.google.com/identity/images/g-logo.png" alt="" aria-hidden="true">
+    Continue with Google
+  </button>
+</div>
+
+<!-- Firebase (compat) - v8 namespaced SDK so auth.js can use window.firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<!-- 🔥 THIS IS THE MOST IMPORTANT LINE -->
+<script type="module" src="/frontend/assets/auth.js"></script>
+
+</body>
+</html>

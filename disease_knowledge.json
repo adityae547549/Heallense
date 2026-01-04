@@ -1,0 +1,205 @@
+{
+  "disclaimer": "This information is for educational purposes only. Always consult a qualified healthcare professional for medical advice.",
+  "diseases": [
+    {
+      "id": "diabetes",
+      "topic": "Diabetes",
+      "category": "Chronic Disease",
+      "source": "MedlinePlus",
+      "tags": ["diabetes", "blood sugar", "insulin"],
+      "content": "Diabetes is a chronic condition that affects how the body processes blood sugar due to insufficient insulin or poor insulin use.",
+      "symptoms": ["Increased thirst", "Frequent urination", "Fatigue", "Blurred vision"],
+      "management": ["Healthy diet", "Regular exercise", "Blood sugar monitoring", "Medical guidance"]
+    },
+    {
+      "id": "hypertension",
+      "topic": "Hypertension",
+      "category": "Chronic Disease",
+      "source": "WHO",
+      "tags": ["hypertension", "high blood pressure"],
+      "content": "Hypertension is a condition where blood pressure remains consistently high, increasing heart and stroke risk.",
+      "symptoms": ["Often no symptoms", "Headaches", "Dizziness"],
+      "management": ["Reduce salt intake", "Exercise", "Stress management"]
+    },
+    {
+      "id": "asthma",
+      "topic": "Asthma",
+      "category": "Respiratory",
+      "source": "NHS",
+      "tags": ["asthma", "breathing", "lungs"],
+      "content": "Asthma is a chronic respiratory condition causing inflammation and narrowing of airways.",
+      "symptoms": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing"],
+      "management": ["Avoid triggers", "Use inhalers", "Regular medical check-ups"]
+    },
+    {
+      "id": "anxiety",
+      "topic": "Anxiety",
+      "category": "Mental Health",
+      "source": "NHS",
+      "tags": ["anxiety", "stress", "mental health"],
+      "content": "Anxiety involves persistent worry or fear that may interfere with daily activities.",
+      "symptoms": ["Restlessness", "Rapid heartbeat", "Difficulty concentrating"],
+      "management": ["Relaxation techniques", "Physical activity", "Talking to someone"]
+    },
+    {
+      "id": "depression",
+      "topic": "Depression",
+      "category": "Mental Health",
+      "source": "WHO",
+      "tags": ["depression", "mood", "mental health"],
+      "content": "Depression is a mental health condition marked by persistent sadness and loss of interest.",
+      "symptoms": ["Low mood", "Fatigue", "Sleep problems", "Loss of interest"],
+      "management": ["Social support", "Healthy routine", "Professional help"]
+    },
+    {
+      "id": "insomnia",
+      "topic": "Insomnia",
+      "category": "Sleep Disorder",
+      "source": "NHS",
+      "tags": ["insomnia", "sleep"],
+      "content": "Insomnia is a sleep disorder that makes falling or staying asleep difficult.",
+      "symptoms": ["Difficulty sleeping", "Daytime fatigue", "Poor concentration"],
+      "management": ["Sleep routine", "Reduce caffeine", "Relaxation techniques"]
+    },
+    {
+      "id": "obesity",
+      "topic": "Obesity",
+      "category": "Metabolic",
+      "source": "WHO",
+      "tags": ["obesity", "weight", "bmi"],
+      "content": "Obesity is excess body fat that increases the risk of multiple health problems.",
+      "symptoms": ["Weight gain", "Reduced mobility"],
+      "management": ["Balanced diet", "Physical activity"]
+    },
+    {
+      "id": "heart_disease",
+      "topic": "Heart Disease",
+      "category": "Cardiovascular",
+      "source": "WHO",
+      "tags": ["heart disease", "cardiovascular"],
+      "content": "Heart disease includes conditions affecting heart structure and function.",
+      "symptoms": ["Chest pain", "Shortness of breath", "Fatigue"],
+      "management": ["Healthy lifestyle", "Regular check-ups"]
+    },
+    {
+      "id": "migraine",
+      "topic": "Migraine",
+      "category": "Neurological",
+      "source": "NHS",
+      "tags": ["migraine", "headache"],
+      "content": "Migraine is a neurological condition causing severe headaches with nausea or light sensitivity.",
+      "symptoms": ["Severe headache", "Nausea", "Light sensitivity"],
+      "management": ["Rest", "Hydration", "Trigger avoidance"]
+    },
+    {
+      "id": "arthritis",
+      "topic": "Arthritis",
+      "category": "Joint Disorder",
+      "source": "NHS",
+      "tags": ["arthritis", "joint pain"],
+      "content": "Arthritis causes joint inflammation, pain, and stiffness.",
+      "symptoms": ["Joint pain", "Swelling", "Stiffness"],
+      "management": ["Exercise", "Joint care", "Medical guidance"]
+    },
+    {
+      "id": "anemia",
+      "topic": "Anemia",
+      "category": "Blood Disorder",
+      "source": "NHS",
+      "tags": ["anemia", "fatigue", "low hemoglobin"],
+      "content": "Anemia occurs when there are not enough healthy red blood cells to carry oxygen.",
+      "symptoms": ["Fatigue", "Weakness", "Pale skin"],
+      "management": ["Balanced diet", "Medical evaluation"]
+    },
+    {
+      "id": "covid19",
+      "topic": "COVID-19",
+      "category": "Infectious Disease",
+      "source": "WHO",
+      "tags": ["covid-19", "virus", "infection"],
+      "content": "COVID-19 is an infectious respiratory disease caused by a coronavirus.",
+      "symptoms": ["Fever", "Cough", "Loss of taste or smell"],
+      "management": ["Rest", "Hydration", "Follow health guidelines"]
+    },
+    {
+      "id": "flu",
+      "topic": "Influenza",
+      "category": "Respiratory",
+      "source": "WHO",
+      "tags": ["flu", "influenza"],
+      "content": "Influenza is a contagious viral respiratory illness.",
+      "symptoms": ["Fever", "Body aches", "Fatigue"],
+      "management": ["Rest", "Fluids"]
+    },
+    {
+      "id": "acid_reflux",
+      "topic": "Acid Reflux",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["acid reflux", "heartburn"],
+      "content": "Acid reflux occurs when stomach acid flows back into the esophagus.",
+      "symptoms": ["Heartburn", "Chest discomfort"],
+      "management": ["Diet changes", "Smaller meals"]
+    },
+    {
+      "id": "constipation",
+      "topic": "Constipation",
+      "category": "Digestive",
+      "source": "NHS",
+      "tags": ["constipation", "digestion"],
+      "content": "Constipation involves infrequent or difficult bowel movements.",
+      "symptoms": ["Hard stools", "Bloating"],
+      "management": ["Fiber-rich diet", "Hydration"]
+    },
+    {
+      "id": "dehydration",
+      "topic": "Dehydration",
+      "category": "Hydration",
+      "source": "WHO",
+      "tags": ["dehydration", "fluids"],
+      "content": "Dehydration happens when fluid loss exceeds intake.",
+      "symptoms": ["Thirst", "Dark urine", "Fatigue"],
+      "management": ["Fluid intake", "Electrolytes"]
+    },
+    {
+      "id": "common_cold",
+      "topic": "Common Cold",
+      "category": "Respiratory",
+      "source": "NHS",
+      "tags": ["cold", "runny nose"],
+      "content": "The common cold is a viral infection of the nose and throat.",
+      "symptoms": ["Runny nose", "Sneezing", "Sore throat"],
+      "management": ["Rest", "Hydration"]
+    },
+    {
+      "id": "uti",
+      "topic": "Urinary Tract Infection (UTI)",
+      "category": "Infection",
+      "source": "NHS",
+      "tags": ["uti", "urinary infection"],
+      "content": "A UTI is an infection affecting the urinary system.",
+      "symptoms": ["Burning urination", "Frequent urination"],
+      "management": ["Hydration", "Medical care"]
+    },
+    {
+      "id": "eczema",
+      "topic": "Eczema",
+      "category": "Skin Condition",
+      "source": "NHS",
+      "tags": ["eczema", "itching"],
+      "content": "Eczema causes dry, itchy, and inflamed skin.",
+      "symptoms": ["Dry skin", "Itching", "Redness"],
+      "management": ["Moisturizing", "Avoid triggers"]
+    },
+    {
+      "id": "acne",
+      "topic": "Acne",
+      "category": "Skin Condition",
+      "source": "NHS",
+      "tags": ["acne", "pimples"],
+      "content": "Acne is a skin condition caused by blocked pores.",
+      "symptoms": ["Pimples", "Oily skin"],
+      "management": ["Skin care", "Hygiene"]
+    }
+  ]
+}
