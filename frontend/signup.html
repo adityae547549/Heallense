@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sign Up | HealLense</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="auth-page">
+  <div class="auth-card">
+
+    <h2 class="auth-title">Create account</h2>
+    <p class="auth-subtext">Start your journey with HealLense</p>
+
+    <form id="signupForm" novalidate>
+      <label for="name">Full name</label>
+      <input id="name" name="name" class="input" required>
+
+      <label for="email">Email</label>
+      <input id="email" name="email" class="input" type="email" required>
+
+      <label for="password">Password</label>
+      <input id="password" name="password" class="input" type="password" required>
+
+      <label for="confirmPassword">Confirm password</label>
+      <input id="confirmPassword" name="confirmPassword" class="input" type="password" required>
+
+      <div id="formError" class="form-error" role="alert" aria-live="assertive" style="display:none"></div>
+
+      <button class="btn primary" type="submit" onclick="location.href='dashboard.html'">Create account</button>
+    </form>
+
+    <hr>
+
+    <button id="googleSignup" class="btn google" type="button">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="" aria-hidden="true">
+      Sign up with Google
+    </button>
+
+    <p class="small">Already have an account? <a href="login.html">Login</a></p>
+
+  </div>
+
+<!-- Firebase (compat) - v8 namespaced SDK so auth.js can use window.firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script type="module" src="./assets/auth.js"></script>
+</body>
+</html>
